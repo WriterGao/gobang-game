@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=五子棋游戏
+Name[en]=Gobang Game
+Comment=一个功能完整的五子棋游戏
+Comment[en]=A full-featured Gobang game
+Exec=Gobang
+Icon=gobang
+Terminal=false
+Categories=Game;BoardGame;
+Keywords=gobang;五子棋;游戏;board;strategy;
+StartupNotify=true

@@ -1,0 +1,21 @@
+# 1. 初始化Git仓库
+git init
+
+# 2. 配置用户信息（如果还没配置过）
+git config --global user.name "您的姓名"
+git config --global user.email "您的邮箱@example.com"
+
+# 3. 添加所有文件
+git add .
+
+# 4. 创建提交
+git commit -m "五子棋游戏完整项目 - 支持跨平台构建"
+
+# 5. 设置主分支
+git branch -M main
+
+# 6. 添加远程仓库（替换为您的实际地址）
+git remote add origin https://github.com/您的用户名/gobang-game.git
+
+# 7. 推送到GitHub
+git push -u origin main

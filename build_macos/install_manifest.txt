@@ -1,0 +1,3 @@
+/Users/gao/Documents/小目标/五子棋/build_macos/_CPack_Packages/macOS/DragNDrop/五子棋游戏-1.0.0-macOS/./Gobang.app/Contents/MacOS/Gobang
+/Users/gao/Documents/小目标/五子棋/build_macos/_CPack_Packages/macOS/DragNDrop/五子棋游戏-1.0.0-macOS/./Gobang.app/Contents/Info.plist
+/Users/gao/Documents/小目标/五子棋/build_macos/_CPack_Packages/macOS/DragNDrop/五子棋游戏-1.0.0-macOS/Gobang.app/Contents/Resources/.DS_Store

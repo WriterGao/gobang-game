@@ -1,0 +1,10 @@
+/Users/gao/Documents/小目标/五子棋/build_macos/CMakeFiles/Gobang.dir
+/Users/gao/Documents/小目标/五子棋/build_macos/CMakeFiles/package.dir
+/Users/gao/Documents/小目标/五子棋/build_macos/CMakeFiles/package_source.dir
+/Users/gao/Documents/小目标/五子棋/build_macos/CMakeFiles/edit_cache.dir
+/Users/gao/Documents/小目标/五子棋/build_macos/CMakeFiles/rebuild_cache.dir
+/Users/gao/Documents/小目标/五子棋/build_macos/CMakeFiles/list_install_components.dir
+/Users/gao/Documents/小目标/五子棋/build_macos/CMakeFiles/install.dir
+/Users/gao/Documents/小目标/五子棋/build_macos/CMakeFiles/install/local.dir
+/Users/gao/Documents/小目标/五子棋/build_macos/CMakeFiles/install/strip.dir
+/Users/gao/Documents/小目标/五子棋/build_macos/CMakeFiles/Gobang_autogen.dir
