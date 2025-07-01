@@ -1,0 +1,73 @@
+# 构建目录
+build/
+build_*/
+*build*
+
+# 构建产物
+*.dmg
+*.exe
+*.deb
+*.rpm
+*.tar.gz
+*.zip
+
+# 临时文件
+*.tmp
+temp.*
+
+# macOS系统文件
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# CMake生成文件
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+CPackConfig.cmake
+CPackSourceConfig.cmake
+install_manifest.txt
+
+# Qt生成文件
+*_autogen/
+moc_*.cpp
+ui_*.h
+qrc_*.cpp
+
+# 编译产物
+*.o
+*.obj
+*.so
+*.dylib
+*.dll
+*.a
+*.lib
+
+# IDE文件
+.vscode/
+.idea/
+*.pro.user
+*.pro.user.*
+
+# 日志文件
+*.log
+
+# 可执行文件
+gobang
+Gobang
+console_gobang
+
+# Xcode
+*.pbxuser
+*.perspectivev3
+*.xcuserstate
+DerivedData/
+
+# Visual Studio
+*.vcxproj.user
+*.suo
+*.user
+Debug/
+Release/
+x64/
+
