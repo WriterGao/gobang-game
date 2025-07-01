@@ -1,0 +1,152 @@
+name: 构建五子棋游戏
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  release:
+    types: [ published ]
+
+jobs:
+  build-windows:
+    name: 构建Windows版本
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: 安装Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: '5.15.2'
+        arch: 'win64_msvc2019_64'
+        
+    - name: 配置MSVC
+      uses: ilammy/msvc-dev-cmd@v1
+      
+    - name: 配置项目
+      run: |
+        mkdir build
+        cd build
+        cmake -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 16 2019" -A x64 ..
+        
+    - name: 编译项目
+      run: |
+        cd build
+        cmake --build . --config Release
+        
+    - name: 部署Qt依赖
+      run: |
+        cd build
+        cmake --install . --prefix . --config Release
+        windeployqt.exe bin\Gobang.exe
+        
+    - name: 创建安装包
+      run: |
+        cd build
+        cpack -G NSIS -C Release
+        
+    - name: 上传构建产物
+      uses: actions/upload-artifact@v3
+      with:
+        name: 五子棋游戏-Windows
+        path: build/*.exe
+
+  build-macos:
+    name: 构建macOS版本
+    runs-on: macos-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: 安装Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: '5.15.2'
+        
+    - name: 配置项目
+      run: |
+        mkdir build
+        cd build
+        cmake -DCMAKE_BUILD_TYPE=Release ..
+        
+    - name: 编译项目
+      run: |
+        cd build
+        cmake --build . --config Release
+        
+    - name: 创建应用程序包
+      run: |
+        cd build
+        cmake --install . --prefix .
+        macdeployqt ./Gobang.app -verbose=2
+        
+    - name: 创建DMG
+      run: |
+        cd build
+        cpack -G DragNDrop
+        
+    - name: 上传构建产物
+      uses: actions/upload-artifact@v3
+      with:
+        name: 五子棋游戏-macOS
+        path: build/*.dmg
+
+  build-linux:
+    name: 构建Linux版本
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: 安装系统依赖
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y qt5-default qtmultimedia5-dev cmake build-essential
+        
+    - name: 配置项目
+      run: |
+        mkdir build
+        cd build
+        cmake -DCMAKE_BUILD_TYPE=Release ..
+        
+    - name: 编译项目
+      run: |
+        cd build
+        cmake --build . --config Release
+        
+    - name: 创建安装包
+      run: |
+        cd build
+        cmake --install . --prefix .
+        cpack -G DEB
+        cpack -G TGZ
+        
+    - name: 上传构建产物
+      uses: actions/upload-artifact@v3
+      with:
+        name: 五子棋游戏-Linux
+        path: |
+          build/*.deb
+          build/*.tar.gz
+
+  release:
+    name: 发布版本
+    needs: [build-windows, build-macos, build-linux]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release'
+    
+    steps:
+    - name: 下载所有构建产物
+      uses: actions/download-artifact@v3
+      
+    - name: 上传到Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          五子棋游戏-Windows/*
+          五子棋游戏-macOS/*
+          五子棋游戏-Linux/*
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

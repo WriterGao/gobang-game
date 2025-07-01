@@ -2,6 +2,8 @@
 build/
 build_*/
 *build*
+# 但允许GitHub Actions配置
+!.github/workflows/build.yml
 
 # 构建产物
 *.dmg
