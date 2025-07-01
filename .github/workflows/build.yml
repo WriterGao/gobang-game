@@ -57,7 +57,7 @@ jobs:
     - name: 上传构建产物
       uses: actions/upload-artifact@v4
       with:
-        name: 五子棋游戏-Windows
+        name: Gobang-Game-Windows
         path: |
           build/*.exe
           build/bin/Gobang.exe
@@ -109,7 +109,7 @@ jobs:
     - name: 上传构建产物
       uses: actions/upload-artifact@v4
       with:
-        name: 五子棋游戏-macOS
+        name: Gobang-Game-macOS
         path: build/*.dmg
 
   build-linux:
@@ -145,7 +145,7 @@ jobs:
     - name: 上传构建产物
       uses: actions/upload-artifact@v4
       with:
-        name: 五子棋游戏-Linux
+        name: Gobang-Game-Linux
         path: |
           build/*.deb
           build/*.tar.gz
@@ -164,8 +164,8 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          五子棋游戏-Windows/*
-          五子棋游戏-macOS/*
-          五子棋游戏-Linux/*
+          Gobang-Game-Windows/*
+          Gobang-Game-macOS/*
+          Gobang-Game-Linux/*
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
