@@ -41,12 +41,33 @@ jobs:
         cd build
         cmake --install . --prefix . --config Release
         if (Test-Path "bin\Gobang.exe") {
-          windeployqt.exe bin\Gobang.exe --release --force
+          echo "找到Gobang.exe，开始部署Qt依赖..."
+          
+          # 使用windeployqt部署基本依赖
+          windeployqt.exe bin\Gobang.exe --release --force --compiler-runtime --verbose 2
+          
+          # 检查并手动复制可能缺失的Qt多媒体库
+          $qtDir = $env:Qt5_DIR
+          if (-not $qtDir) {
+            $qtDir = ${env:RUNNER_WORKSPACE}\Qt\5.15.2\msvc2019_64
+          }
+          
+          echo "Qt目录: $qtDir"
+          $multimediaPath = "$qtDir\bin\Qt5Multimedia.dll"
+          if (Test-Path $multimediaPath) {
+            echo "手动复制Qt5Multimedia.dll..."
+            Copy-Item $multimediaPath bin\
+          } else {
+            echo "在以下位置查找Qt5Multimedia.dll:"
+            Get-ChildItem -Path C:\ -Name "Qt5Multimedia.dll" -Recurse -ErrorAction SilentlyContinue | Select-Object -First 5
+          }
+          
+          echo "最终部署的DLL文件："
+          Get-ChildItem bin -Filter "*.dll" | Select-Object Name, Length
+          
         } else {
           echo "找不到Gobang.exe，列出构建文件："
           Get-ChildItem -Recurse -Name "*.exe"
-          echo "检查bin目录："
-          if (Test-Path "bin") { Get-ChildItem bin }
         }
         
     - name: 创建安装包
