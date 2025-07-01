@@ -29,7 +29,7 @@ jobs:
       run: |
         mkdir build
         cd build
-        cmake -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 16 2019" -A x64 ..
+        cmake -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 17 2022" -A x64 ..
         
     - name: 编译项目
       run: |
@@ -40,7 +40,14 @@ jobs:
       run: |
         cd build
         cmake --install . --prefix . --config Release
-        windeployqt.exe bin\Gobang.exe
+        if (Test-Path "bin\Gobang.exe") {
+          windeployqt.exe bin\Gobang.exe --release --force
+        } else {
+          echo "找不到Gobang.exe，列出构建文件："
+          Get-ChildItem -Recurse -Name "*.exe"
+          echo "检查bin目录："
+          if (Test-Path "bin") { Get-ChildItem bin }
+        }
         
     - name: 创建安装包
       run: |
@@ -51,7 +58,9 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: 五子棋游戏-Windows
-        path: build/*.exe
+        path: |
+          build/*.exe
+          build/bin/Gobang.exe
 
   build-macos:
     name: 构建macOS版本
@@ -79,8 +88,18 @@ jobs:
     - name: 创建应用程序包
       run: |
         cd build
-        cmake --install . --prefix .
-        macdeployqt ./Gobang.app -verbose=2
+        cmake --install . --prefix . --config Release
+        # 查找Gobang.app的位置
+        APP_PATH=$(find . -name "Gobang.app" -type d | head -1)
+        if [ -n "$APP_PATH" ]; then
+          echo "找到应用程序包：$APP_PATH"
+          macdeployqt "$APP_PATH" -verbose=2
+        else
+          echo "找不到Gobang.app，列出所有.app文件："
+          find . -name "*.app" -type d
+          echo "列出当前目录结构："
+          ls -la
+        fi
         
     - name: 创建DMG
       run: |
@@ -103,7 +122,7 @@ jobs:
     - name: 安装系统依赖
       run: |
         sudo apt-get update
-        sudo apt-get install -y qt5-default qtmultimedia5-dev cmake build-essential
+        sudo apt-get install -y qtbase5-dev qtmultimedia5-dev qt5-qmake cmake build-essential pkg-config
         
     - name: 配置项目
       run: |
