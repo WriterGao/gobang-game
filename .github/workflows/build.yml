@@ -14,7 +14,7 @@ jobs:
     runs-on: windows-latest
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     - name: 安装Qt
       uses: jurplel/install-qt-action@v3
@@ -48,7 +48,7 @@ jobs:
         cpack -G NSIS -C Release
         
     - name: 上传构建产物
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: 五子棋游戏-Windows
         path: build/*.exe
@@ -58,7 +58,7 @@ jobs:
     runs-on: macos-latest
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     - name: 安装Qt
       uses: jurplel/install-qt-action@v3
@@ -88,7 +88,7 @@ jobs:
         cpack -G DragNDrop
         
     - name: 上传构建产物
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: 五子棋游戏-macOS
         path: build/*.dmg
@@ -98,7 +98,7 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     - name: 安装系统依赖
       run: |
@@ -124,7 +124,7 @@ jobs:
         cpack -G TGZ
         
     - name: 上传构建产物
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: 五子棋游戏-Linux
         path: |
@@ -139,7 +139,7 @@ jobs:
     
     steps:
     - name: 下载所有构建产物
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       
     - name: 上传到Release
       uses: softprops/action-gh-release@v1
