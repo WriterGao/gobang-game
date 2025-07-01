@@ -41,29 +41,57 @@ jobs:
         cd build
         cmake --install . --prefix . --config Release
         if (Test-Path "bin\Gobang.exe") {
-          echo "找到Gobang.exe，开始部署Qt依赖..."
+          echo "找到Gobang.exe，开始手动部署所有Qt依赖..."
           
-          # 使用windeployqt部署基本依赖
-          windeployqt.exe bin\Gobang.exe --release --force --compiler-runtime --verbose 2
-          
-          # 检查并手动复制可能缺失的Qt多媒体库
-          $qtDir = $env:Qt5_DIR
-          if (-not $qtDir) {
-            $qtDir = ${env:RUNNER_WORKSPACE}\Qt\5.15.2\msvc2019_64
+          # 查找Qt安装目录
+          $qtDir = ${env:RUNNER_WORKSPACE}\Qt\5.15.2\msvc2019_64
+          if (-not (Test-Path $qtDir)) {
+            $qtDir = "C:\Qt\5.15.2\msvc2019_64"
+          }
+          if (-not (Test-Path $qtDir)) {
+            $qtDir = "D:\a\_temp\msys64\qt5-static"
           }
           
-          echo "Qt目录: $qtDir"
-          $multimediaPath = "$qtDir\bin\Qt5Multimedia.dll"
-          if (Test-Path $multimediaPath) {
-            echo "手动复制Qt5Multimedia.dll..."
-            Copy-Item $multimediaPath bin\
-          } else {
-            echo "在以下位置查找Qt5Multimedia.dll:"
-            Get-ChildItem -Path C:\ -Name "Qt5Multimedia.dll" -Recurse -ErrorAction SilentlyContinue | Select-Object -First 5
+          echo "使用Qt目录: $qtDir"
+          
+          # 手动复制所有必需的Qt库
+          $qtLibs = @(
+            "Qt5Core.dll",
+            "Qt5Gui.dll", 
+            "Qt5Widgets.dll",
+            "Qt5Multimedia.dll",
+            "Qt5MultimediaWidgets.dll",
+            "Qt5Concurrent.dll",
+            "Qt5Network.dll"
+          )
+          
+          foreach ($lib in $qtLibs) {
+            $sourcePath = "$qtDir\bin\$lib"
+            if (Test-Path $sourcePath) {
+              echo "复制 $lib..."
+              Copy-Item $sourcePath bin\
+            } else {
+              echo "警告: 找不到 $lib"
+            }
           }
           
-          echo "最终部署的DLL文件："
-          Get-ChildItem bin -Filter "*.dll" | Select-Object Name, Length
+          # 复制Qt平台插件
+          $platformsPath = "$qtDir\plugins\platforms"
+          if (Test-Path $platformsPath) {
+            echo "复制平台插件..."
+            New-Item -ItemType Directory -Path "bin\platforms" -Force
+            Copy-Item "$platformsPath\qwindows.dll" "bin\platforms\" -ErrorAction SilentlyContinue
+          }
+          
+          # 复制Visual C++运行时
+          try {
+            windeployqt.exe bin\Gobang.exe --release --force --compiler-runtime --no-translations --no-system-d3d-compiler --no-opengl-sw
+          } catch {
+            echo "windeployqt失败，继续手动部署..."
+          }
+          
+          echo "最终部署的文件："
+          Get-ChildItem bin -Recurse | Where-Object { $_.Extension -eq ".dll" } | Select-Object Name, Length
           
         } else {
           echo "找不到Gobang.exe，列出构建文件："
